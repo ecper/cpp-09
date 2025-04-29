@@ -4,7 +4,9 @@
 # include <iostream>
 # include <string>
 # include <vector>
+# include <deque>
 # include <cmath>
+#include <sys/time.h>
 # include <algorithm>
 
 class PmergeMe
