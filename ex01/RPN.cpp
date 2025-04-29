@@ -19,12 +19,20 @@ RPN::RPN( std::string args )
 	std::string buf;
 	while (getline(i_stream, buf, ' '))
 	{
-		if (!buf.empty())
+		isValidInput(buf);
+
+		if (!buf.empty() && isDigit(buf))
 			this->rpn.push(buf);
+		else if (!buf.empty() && isOperator(buf))
+			this->calculate(buf);
 	}
 
-	int result = this->calculate();
+	int result = static_cast<int>(std::atoi(this->rpn.top().c_str()));
+	this->rpn.pop();
 
+
+	if (!this->rpn.empty())
+		throw std::runtime_error("stack is not empty");
 	std::cout << result << std::endl;
 }
 
@@ -47,62 +55,61 @@ RPN &				RPN::operator=( RPN const & rhs )
 	return *this;
 }
 
-
-
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
 
 
-void RPN::isValidDigit( std::string arg )
+void RPN::isValidInput( std::string arg )
 {
-	if (arg.size() != 1 || arg < "0" || arg > "9")
-		throw std::runtime_error("is not valid digit");
+	if ((arg.size() != 1 || (arg < "0" || arg > "9")) && arg != "+" && arg != "-" && arg != "*" && arg != "/")
+		throw std::runtime_error("is not valid input");
 }
 
-int RPN::calculate( void )
+bool RPN::isDigit(std::string arg)
+{
+	if (arg < "0" || arg  > "9")
+		return (false);
+	return (true);
+}
+
+bool RPN::isOperator(std::string arg)
+{
+	if (arg != "+" && arg != "-" && arg != "*" && arg != "/")
+		return (false);
+	return (true);
+}
+
+
+
+void RPN::calculate( std::string operators )
 {
 	int val1;
 	int val2;
-	std::string operators;
-
 	int result;
 
-	while (!this->rpn.empty())
-	{
-		val1 = static_cast<int>(std::atoi(this->rpn.top().c_str()));
-		this->rpn.pop();
-		if (this->rpn.empty())
-			throw std::runtime_error("invalid input");
-		isValidDigit(this->rpn.top());
-		val2 = static_cast<int>(std::atoi(this->rpn.top().c_str()));
-		this->rpn.pop();
-		if (this->rpn.empty())
-			throw std::runtime_error("can not find operator");
-		operators = this->rpn.top();
-		this->rpn.pop();
-	
-		if (operators == "+")
-			result = val1 + val2;
-		else if (operators == "-")
-			result = val1 - val2;
-		else if (operators == "*")
-			result = val1 * val2;
-		else if (operators == "/")
-			result = val1 / val2;
-		else
-			throw std::runtime_error("can not find operator");
+	val1 = static_cast<int>(std::atoi(this->rpn.top().c_str()));
+	this->rpn.pop();
+	if (this->rpn.empty())
+		throw std::runtime_error("invalid input");
 
-		if (this->rpn.empty())
-			return (result);
-	
-		std::ostringstream oss;
-	
-		oss << result;
-		this->rpn.push(oss.str());		
-	}
+	val2 = static_cast<int>(std::atoi(this->rpn.top().c_str()));
+	this->rpn.pop();
 
-	throw std::runtime_error("something went wrong");
+	if (operators == "+")
+		result = val2 + val1;
+	else if (operators == "-")
+		result = val2 - val1;
+	else if (operators == "*")
+		result = val2 * val1;
+	else if (operators == "/")
+		result = val2 / val1;
+	else
+		throw std::runtime_error("can not find operator");
+
+	std::ostringstream oss;
+	oss << result;
+	this->rpn.push(oss.str());
 }
 
 

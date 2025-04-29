@@ -10,7 +10,6 @@ int main ( int argc, char **argv )
 
     try {
         std::string args = std::string(argv[1]);
-        std::reverse(args.begin(), args.end());
         RPN test(args);
     } catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;

@@ -176,8 +176,15 @@ void BitcoinExchange::isValidDate( std::string date )
 
 void BitcoinExchange::isValidValue( std::string value, bool isCsv )
 {
+	bool isFloat = false;
+	if (value.length() > 2 && value[0] == '0')
+		isFloat = true;
 	for (size_t i = 0; i < value.length(); i++)
 	{
+		if (i == 0 && value[i] == '.')
+			throw IsNotValidValueException();
+		if (i == 1 && isFloat == true && value[i] != '.')
+			throw IsNotValidValueException();
 		if ((value[i] < '0' || value[i] > '9') && value[i] != '.' && value[i] != '-')
 			throw IsNotValidValueException();
 	}

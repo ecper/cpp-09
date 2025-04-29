@@ -23,8 +23,10 @@ class RPN
 	private:
 		std::stack<std::string> rpn;
 
-		void isValidDigit( std::string value );
-		int calculate( void );
+		void isValidInput( std::string value );
+		void calculate( std::string operators );
+		bool isDigit(std::string arg);
+		bool isOperator(std::string arg);
 
 };
 

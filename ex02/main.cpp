@@ -194,7 +194,7 @@ std::deque<PmergeMe*> binaryInsertionSortDeque(std::deque<PmergeMe *> elements, 
 	}
 
 	
-	winners.insert(winners.begin(), losers.front());
+	winners.push_front(losers.front());
 
 	// for (std::size_t i = 0; i < winners.size(); i++)
 	// {
